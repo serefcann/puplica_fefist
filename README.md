@@ -20,7 +20,7 @@ Bu bölüm, Gemini API’yi kullanmak için gereken adımları açıklamaktadır
 
 ```env
 GOOGLE_API_KEY=your_api_key_here
-
+```
 ## 3. Gemini Client’ta API Key’i Kullan
 
 Python kodunda `dotenv` ile `.env` dosyasını yükleyin:
@@ -34,10 +34,13 @@ load_dotenv()  # .env yüklenir
 api_key = os.getenv("GOOGLE_API_KEY")
 
 client = genai.Client(api_key=api_key)
-
+```
 ## 4. Gemini API ile Sorgu Yap
+
+```python
 response = client.models.generate_content(
     model="gemini-2.5-flash",
     contents="Where is Marmara University?"
 )
 print(response.text)
+```

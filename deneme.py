@@ -12,6 +12,6 @@ soup.prettify()
 uni_name = soup.find('h3').text.strip()
 print(f"Üniversite Adı: {uni_name}")
 
-print("hello world")
+
 
 

@@ -1,4 +1,4 @@
-# puplica_fefistffffffff
+# puplica_fefist
 # Gemini API Kullanımı İçin Adımlar
 
 Bu bölüm, Gemini API’yi kullanmak için gereken adımları açıklamaktadır.

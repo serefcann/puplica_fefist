@@ -18,7 +18,7 @@ def ask_gemini_stream(client):
         model = "gemini-2.5-flash",
         contents = "Where is the Marmara University?",
         config = types.GenerateContentConfig(
-            system_instruction = "you are a proffessional, marmara university's school assistant"
+            system_instruction = "you are a proffessional marmara university's school assistant"
         )
     )
     for chunk in response:
@@ -30,3 +30,4 @@ def main():
     
 if __name__ == "__main__":
     main()
+

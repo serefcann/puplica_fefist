@@ -1,4 +1,4 @@
-import requests
+from utils.file_utils import dump_yokatlas_data
 from bs4 import BeautifulSoup
 import warnings
 warnings.filterwarnings("ignore")
@@ -25,7 +25,8 @@ def parse_html(html_content):
     program_info = {}
     soup = BeautifulSoup(html_content.replace("---", "0"), 'html.parser')
     tables = soup.find_all('table', {'class':'table table-bordered'})
-    program_info["Bölüm Adı"] = tables[0].find('th').text
+    bolum_adi = tables[0].find('th').text
+    program_info["Bölüm Adı"] = bolum_adi
     for table in tables:
         rows = table.find_all('tr')
         for row in rows:
@@ -52,8 +53,7 @@ async def fetch_chunked(id_list, chunk_size):
     return all_data
 parsed_data = asyncio.run(fetch_chunked(id_list, 100))
 
-with open ("C:\\Users\\şerefcanmemiş\\Documents\\projects_2\\puplica\\yokatlas_data.json", 'w', encoding='utf-8') as f:
-    json.dump(parsed_data, f, ensure_ascii=False, indent=3)
+dump_yokatlas_data('yokatlas_data\yokatlas_data.json', parsed_data = parsed_data)
     
 
 

@@ -5,24 +5,29 @@ import numpy as np
 import json
 import faiss
 from sentence_transformers import SentenceTransformer
+import logging
+from utils.model_utils import get_sentence_transformer
+logging.basicConfig(level=logging.INFO)
 
-with open(r'C:\Users\şerefcanmemiş\Documents\projects_2\puplica\yokatlas_data.json', 'r', encoding='utf-8') as f:
-    data = json.load(f)
 
-documents = [
-    ' | '.join(f'{k}: {v if v.strip() != "" else "null"}' for k, v in item.items())
-for item in data
-]
+def reformat_json(data):
+    documents = [
+        ' | '.join(f'{k}: {v if v.strip() != "" else "null"}' for k, v in item.items())
+    for item in data
+    ]
+    return documents
 
-model = SentenceTransformer('sentence-transformers/distiluse-base-multilingual-cased-v2')
-print('model yuklendi ...')
-embeddings = model.encode(documents, convert_to_numpy=True, batch_size=64, num_workers=4, show_progress_bar=True)
-print('embedding kuruldu...')
-print("Embedding shape:", embeddings.shape)  # (n_samples, 512)
+def create_index_sentence_transformer(documents, download_path="yokatlas_index.faiss"):
+    model = get_sentence_transformer()
+    logging.info("Model yüklendi")
+    embeddings = model.encode(documents, convert_to_numpy=True, batch_size=64, num_workers=4, show_progress_bar=True)
+    logging.info('embedding kuruldu...')
+    dim = embeddings.shape[1]
+    index = faiss.IndexFlatL2(dim)
+    index.add(embeddings)
 
-dim = embeddings.shape[1]
-index = faiss.IndexFlatL2(dim)
-index.add(embeddings)
-
-faiss.write_index(index, "yokatlas_index.faiss")
+    try:
+        faiss.write_index(index, download_path)
+    except Exception as e:
+        logging.error(f"Index kaydedilemedi: {e}")
 

@@ -7,11 +7,7 @@ import httpx
 import asyncio
 import json
 import random
-df = pd.read_csv(r'C:\Users\şerefcanmemiş\Documents\projects_2\puplica\program_ids.csv')
-id_list  = list(df.Column1)
 
-
-# universite ve bolum id parametreleri
     
 sem = asyncio.Semaphore(5)
 async def fetch(client, sem, url):
@@ -51,11 +47,13 @@ async def fetch_chunked(id_list, chunk_size):
             print(f"Chunk {i//chunk_size + 1} tamamlandı, {len(parsed_data)} sayfa çekildi.")
             await asyncio.sleep(3 + random.uniform(0,2))
     return all_data
-parsed_data = asyncio.run(fetch_chunked(id_list, 100))
 
-dump_yokatlas_data('yokatlas_data\yokatlas_data.json', parsed_data = parsed_data)
-    
 
+if __name__ == '__main__':
+    df = pd.read_csv('yokatlas_data\program_ids.csv')
+    id_list  = list(df.Column1)
+    parsed_data = asyncio.run(fetch_chunked(id_list, 100))
+    dump_yokatlas_data('yokatlas_data\yokatlas_data.json', parsed_data = parsed_data)
 
 
 

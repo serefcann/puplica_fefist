@@ -13,21 +13,18 @@ def load_gemini_client():
     return genai.Client(api_key = gemini_api_key)
 
 
-def ask_gemini_stream(client):
-    response = client.models.generate_content_stream(
+def ask_gemini(client, prompt: str):
+    response = client.models.generate_content(
         model = "gemini-2.5-flash",
-        contents = "Where is the Marmara University?",
+        contents = prompt,
         config = types.GenerateContentConfig(
-            system_instruction = "you are a proffessional marmara university's school assistant"
+            system_instruction = "you are a proffessional school assistant"
         )
     )
-    for chunk in response:
-        print(chunk.text)
+    return response.text
 
-def main():
-    client = load_gemini_client()
-    ask_gemini_stream(client)
     
 if __name__ == "__main__":
-    main()
+    client = load_gemini_client()
+    ask_gemini(client, prompt='istatistik')
 

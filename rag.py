@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 import json
 import re
-from sentence_transformers import SentenceTransformer
 import numpy as np
 import faiss
 from utils.file_utils import load_yokatlas_data
@@ -21,11 +20,12 @@ index = faiss.read_index("yokatlas_data\yokatlas_index.faiss")
 model = get_sentence_transformer()
 print('model yuklendi ...')
 
-def user_query(query):
+def search_rag(query, model, index, data, topk=5):
+    rag_results = []
     query_emb = model.encode([preprocess(query)], convert_to_numpy=True)
-    D, I = index.search(query_emb, 5)
+    D, I = index.search(query_emb, topk)
     for idx in I[0]:
-        print(data[idx])
-        
+        rag_results.append(data[idx])
+    return rag_results        
 if __name__ == "__main__":
-    user_query("marmara istatistik bölümü")
+    search_rag("marmara istatistik bölümü istiyorum puanı kaç")

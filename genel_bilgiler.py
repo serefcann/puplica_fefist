@@ -5,7 +5,7 @@ warnings.filterwarnings("ignore")
 import pandas as pd
 import httpx
 import asyncio
-import json
+import config
 import random
 
     
@@ -50,10 +50,10 @@ async def fetch_chunked(id_list, chunk_size):
 
 
 if __name__ == '__main__':
-    df = pd.read_csv('yokatlas_data\program_ids.csv')
+    df = pd.read_csv('data\program_ids.csv')
     id_list  = list(df.Column1)
     parsed_data = asyncio.run(fetch_chunked(id_list, 100))
-    dump_yokatlas_data('yokatlas_data\yokatlas_data.json', parsed_data = parsed_data)
+    dump_yokatlas_data(config.DATA_PATH, parsed_data = parsed_data)
 
 
 

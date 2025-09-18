@@ -45,16 +45,21 @@ async def anasayfa():
         }
     }
 
+ALLOWED_IPS = ["192.168.1.5", "123.45.67.89", "127.0.0.1"]
 @app.post("/ask")
-async def yokatlas_bot(question_request: QuestionRequest, fastapi_request: Request):
-    question = question_request.question.strip()
-    question_isproper(question=question, MAX_LEN=200)
+async def yokatlas_bot(question_request: QuestionRequest, fastapi_request: Request): 
     user_id = fastapi_request.client.host
     print(user_id)
+    if user_id not in ALLOWED_IPS:
+        raise HTTPException(status_code=403, detail="Bu IP erişemez")
+    
+    question = question_request.question.strip()
+    question_isproper(question=question, MAX_LEN=200)
     question_isspam(user_id=user_id, WINDOW=60, LIMIT=6)
     
     try:
-        rag_results = retriever.hybrid_search(question, topk = 300, return_k = 70)
+        rag_results = retriever.hybrid_search(question, topk = 300, return_k = 50)
+        print(rag_results)
         prompt = create_yokatlas_prompt(rag_results, question)
         answer = gemini.ask(prompt)
         print(answer)

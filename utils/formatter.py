@@ -126,7 +126,3 @@ def clean_query(query: str) -> str:
     # Tekrar birleştir
     return " ".join(keywords)
 
-# Örnek kullanım
-query = "marmara üniversitesi istatistik bölümü için puanı kaç?"
-cleaned = clean_query(query)
-print(cleaned)  # Çıktı: "marmara istatistik"

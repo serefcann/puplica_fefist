@@ -12,15 +12,17 @@ class Gemini:
         if self.gemini_api_key is None:
             raise ValueError("API key not found! Check your .env file.")
         self.client = genai.Client(api_key = self.gemini_api_key)
-        
-        self.chat = self.client.chats.create(model="gemini-2.5-flash")
+        self.chat = None
         
     def start_chat(self, starter_prompt):
+        self.chat = self.client.chats.create(model="gemini-2.5-flash")
         self.chat.send_message(starter_prompt)
         
     def ask(self, prompt):
+        if not hasattr(self, "chat"):
+            raise ValueError("Chat başlatılmamış!")
         response = self.chat.send_message(prompt)
-        print(f"Bot: {response.text}")
+        return response.text
 
     def ask_gemini(self, contents: list, model = "gemini-2.5-flash"):
         response = self.client.models.generate_content(

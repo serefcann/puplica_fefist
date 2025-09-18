@@ -1,4 +1,5 @@
-from utils.file_utils import load_yokatlas_data
+from contextlib import asynccontextmanager, contextmanager
+from utils.file_utils import load_yokatlas_data 
 from utils.model_utils import get_sentence_transformer
 from utils.formatter import format_rag_results
 from gemini import Gemini
@@ -6,33 +7,14 @@ import faiss
 from google.genai import types
 import config
 from rag import Retriever
+from fastapi import FastAPI, HTTPException
+import logging
+import uvicorn
+from pydantic import BaseModel
 
-gemini = Gemini()
-retriever = Retriever()
+logging.basicConfig(level=logging.INFO)
 
-def yokatlas_bot(data, index, model, gemini_client):
-    chat_history = []
 
-    # Konuşma döngüsü başlar
-    while True:
-        # Kullanıcıdan girdi al
-        user_input = input("Sormak istediğiniz bir şey var mı? (Çıkmak için 'dur' yazın) >> ")
-        if user_input.lower() in ["dur", "çıkış", "iptal"]:
-            print("Görüşmek üzere!")
-            break 
-        
-        rag_results = retriever.search_rag(user_input, topk=20) 
-        prompt = create_yokatlas_prompt(rag_results=rag_results, user_input=user_input)
-
-        chat_history.append(types.Content(role='user', parts=[types.Part(text=prompt)]))
-        
-        try:
-            model_response = gemini.ask_gemini(contents=chat_history)
-            chat_history.append(types.Content(role="model", parts=[types.Part(text=model_response)]))
-            print(f"Bot: {model_response}")
-
-        except Exception as e:
-            print(f"Bir hata oluştu: {e}")
             
 starter_prompt = f"""
 Sen, YÖK Atlas'tan alınmış güncel üniversite ve bölüm verileri ile donatılmış bir rehbersin.
@@ -69,32 +51,57 @@ def create_yokatlas_prompt(rag_results: list, user_input: str) -> str:
     """
     return prompt
 
-def yokatlas_bot_2(retriever, gemini, starter_prompt):
+retriever = None
+gemini = None
+
+class QuestionRequest(BaseModel):
+    question: str
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    global retriever, gemini, starter_prompt
+    logging.info("Retriever ve Gemini yükleniyor...")
+    retriever = Retriever()
+    gemini = Gemini()
     gemini.start_chat(starter_prompt)
+    logging.info("Hazır!")
+    yield
+    logging.info("Shutdown işlemleri tamamlandı")
+
+app = FastAPI(lifespan=lifespan)
+
+@app.get("/")
+async def anasayfa():
+    return {
+        "message":"YÖK Atlas RAG Bot API Çalışıyor",
+        "endpoints":{
+            "POST /ask":"Soru sorup yanıt almak için kullanılır"
+        }
+    }
+
+@app.post("/ask")
+async def yokatlas_bot(request: QuestionRequest):
     
-    while True:
-        user_input = input("Sormak istediğiniz bir şey var mı? (Çıkmak için 'dur' yazın) >> ")
-        if user_input.lower() in ["dur", "çıkış", "iptal"]:
-            print("Görüşmek üzere!")
-            break 
-
-        # RAG ile ilgili veriyi al
-        rag_results = retriever.search_rag(user_input, topk=100) 
-        prompt = create_yokatlas_prompt(rag_results, user_input)
-        print(prompt)
-        
-        try:
-            gemini.ask(prompt)
-
-        except Exception as e:
-            print(f"Bir hata oluştu: {e}")
+    question = request.question.strip()
+    if not question:
+        raise HTTPException(status_code=500, detail='Soru boş olamaz')
+    
+    # RAG ile ilgili veriyi al
+    #rag_results = retriever.search_rag(user_input, topk=100) 
+    
+    try:
+        rag_results = retriever.hybrid_search(question, topk = 250, return_k = 50)
+        prompt = create_yokatlas_prompt(rag_results, question)
+        answer = gemini.ask(prompt)
+        print(answer)
+        return {"question":question, "answer":answer}
+    except Exception as e:
+        logging.error(f"HATA {e}")
+        raise HTTPException(status_code=500, detail="Bot yanıt verirken hata oluştu!")
 
 
 if __name__ == '__main__':
-    retriever = Retriever()
-    gemini = Gemini()
-    #yokatlas_bot(data, index, model, gemini_client)
-    yokatlas_bot_2(retriever, gemini, starter_prompt)
+    uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)
 
 
 

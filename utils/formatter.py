@@ -1,4 +1,5 @@
 from utils.process_utils import preprocess
+from constants.universities import university_abbrevations
 def reformat_json(data):
     documents = [
         ' | '.join(f'{k}: {v if v.strip() != "" else "null"}' for k, v in item.items())
@@ -73,3 +74,59 @@ def short_format(data):
             )
         documents.append(preprocess(kisa_data))
     return documents
+import re
+from rapidfuzz import process, fuzz
+
+
+def fix_universitesi_fuzzy(query: str):
+    mapping = {"üni": "üniversitesi", "uni": "üniversitesi"}
+    words = query.split()
+    for i, word in enumerate(words):
+        if word in mapping:
+            words[i] = mapping[word]
+        else:
+            match = process.extractOne(word, ["üniversitesi"], scorer=fuzz.ratio)
+            if match and match[1] > 80:
+                words[i] = match[0]
+    return " ".join(words)
+
+
+def normalize_university(query: str, university_abbrevations: dict):
+    query_lower = query.lower()
+    query_lower = fix_universitesi_fuzzy(query=query_lower)
+    for short, whole in university_abbrevations.items():
+        if whole in query_lower:
+            continue
+        query_lower = query_lower.replace(short, whole)
+    return query_lower
+normalize_university("marmara üniversitesi", university_abbrevations=university_abbrevations)
+
+
+import re
+
+
+
+def clean_query(query: str) -> str:
+    STOPWORDS = {
+    "ve", "ile", "için", "bir", "bu", "istiyorum", "kaç", "bölümü", "sorgula",
+    "lütfen", "bilgi", "sor", "ver", "isterim", "sıralamaları", "sıralaması", "sıralama"
+}
+    """
+    Sorgudan gereksiz kelimeleri çıkarır ve temiz bir string döner.
+    """
+    # Küçük harfe çevir
+    query_lower = query.lower()
+    
+    # Noktalama işaretlerini temizle
+    query_clean = re.sub(r"[^\w\s]", " ", query_lower)
+    
+    # Kelimelere ayır ve stopwordleri çıkar
+    keywords = [w for w in query_clean.split() if w not in STOPWORDS]
+    
+    # Tekrar birleştir
+    return " ".join(keywords)
+
+# Örnek kullanım
+query = "marmara üniversitesi istatistik bölümü için puanı kaç?"
+cleaned = clean_query(query)
+print(cleaned)  # Çıktı: "marmara istatistik"

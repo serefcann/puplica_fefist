@@ -14,7 +14,7 @@ import config
 logging.basicConfig(level=logging.WARNING)
 
 class indexBuilder:
-    def __init__(self, model_name="sentence-transformers/stsb-xlm-r-multilingual"):
+    def __init__(self, model_name="model"):
         self.model = get_sentence_transformer()
         self.index = None
         logging.info("Model yüklendi")

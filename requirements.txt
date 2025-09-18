@@ -8,3 +8,7 @@ pandas>=2.1.1
 pydantic>=2.2.1
 google-genai>=0.1.1
 python-dotenv>=1.0.0
+fastapi>=0.110.0
+uvicorn>=0.29.0
+fuzzywuzzy>=0.18.0
+python-Levenshtein>=0.21.0

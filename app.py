@@ -90,7 +90,7 @@ async def yokatlas_bot(request: QuestionRequest):
     #rag_results = retriever.search_rag(user_input, topk=100) 
     
     try:
-        rag_results = retriever.hybrid_search(question, topk = 250, return_k = 50)
+        rag_results = retriever.hybrid_search(question, topk = 250, return_k = 60)
         prompt = create_yokatlas_prompt(rag_results, question)
         answer = gemini.ask(prompt)
         print(answer)

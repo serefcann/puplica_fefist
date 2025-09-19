@@ -45,13 +45,13 @@ async def anasayfa():
         }
     }
 
-ALLOWED_IPS = ["192.168.1.5", "123.45.67.89", "127.0.0.1"]
+#ALLOWED_IPS = ["192.168.1.5", "123.45.67.89", "127.0.0.1"]
 @app.post("/ask")
 async def yokatlas_bot(question_request: QuestionRequest, fastapi_request: Request): 
     user_id = fastapi_request.client.host
     print(user_id)
-    if user_id not in ALLOWED_IPS:
-        raise HTTPException(status_code=403, detail="Bu IP erişemez")
+    #if user_id not in ALLOWED_IPS:
+    #    raise HTTPException(status_code=403, detail="Bu IP erişemez")
     
     question = question_request.question.strip()
     question_isproper(question=question, MAX_LEN=200)

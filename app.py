@@ -12,6 +12,7 @@ import uvicorn
 from pydantic import BaseModel
 from utils.input_utils import question_isproper, question_isspam, create_yokatlas_prompt, starter_prompt, user_last_queries
 
+from fastapi.middleware.cors import CORSMiddleware
 logging.basicConfig(level=logging.INFO)
 
 
@@ -34,6 +35,14 @@ async def lifespan(app: FastAPI):
     logging.info("Shutdown işlemleri tamamlandı")
 
 app = FastAPI(lifespan=lifespan)
+# allow React (http://localhost:5173 by default with Vite)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/")

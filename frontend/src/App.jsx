@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import ChatBox from './components/ChatBox'
 import InputBar from './components/InputBar'
 import TypingIndicator from './components/TypingIndicator'
+import DarkModeToggle from './components/DarkModeToggle'
 
 function App() {
   const [messages, setMessages] = useState([])
@@ -32,7 +33,7 @@ function App() {
     setError(null)
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/ask', {
+      const response = await fetch('/ask', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -72,13 +73,14 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <h1 className="text-2xl font-semibold text-gray-800 text-center">
+      <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10 transition-colors duration-200">
+        <div className="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+          <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">
             YÖK Atlas RAG Chatbot
           </h1>
+          <DarkModeToggle />
         </div>
       </header>
 
@@ -96,4 +98,5 @@ function App() {
 }
 
 export default App
+
 

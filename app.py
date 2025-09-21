@@ -67,7 +67,7 @@ async def yokatlas_bot(question_request: QuestionRequest, fastapi_request: Reque
     question_isspam(user_id=user_id, WINDOW=60, LIMIT=6)
     
     try:
-        rag_results = retriever.hybrid_search(question, topk = 300, return_k = 50)
+        rag_results = retriever.hybrid_search(question, topk = 300, return_k = 70)
         print(rag_results)
         prompt = create_yokatlas_prompt(rag_results, question)
         answer = gemini.ask(prompt)

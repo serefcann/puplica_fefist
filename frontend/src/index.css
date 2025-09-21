@@ -1,0 +1,201 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base typography */
+* {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+}
+
+/* Custom styles for the chat interface */
+.input-bar {
+  @apply bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-4 py-4;
+}
+
+.send-button {
+  @apply bg-gemini-blue text-white p-3 rounded-full hover:bg-gemini-blue-hover focus:outline-none focus:ring-2 focus:ring-gemini-blue-focus focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200;
+}
+
+.message-bubble {
+  @apply px-4 py-3 rounded-2xl shadow-sm;
+}
+
+.user-message {
+  @apply bg-user-blue dark:bg-user-blue-dark text-white ml-auto;
+}
+
+/* Bot messages use same background as user messages but always white text */
+.bot-message {
+  @apply bg-user-blue dark:bg-user-blue-dark text-white mr-auto;
+}
+
+/* Custom animations */
+@keyframes bounce-slow {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translate3d(0,0,0);
+  }
+  40%, 43% {
+    transform: translate3d(0,-8px,0);
+  }
+  70% {
+    transform: translate3d(0,-4px,0);
+  }
+  90% {
+    transform: translate3d(0,-2px,0);
+  }
+}
+
+.animate-bounce-slow {
+  animation: bounce-slow 1.5s infinite;
+}
+
+/* User message typography - white text in light mode, white text in dark mode */
+.user-message .prose {
+  @apply text-white;
+}
+
+.user-message .prose h1,
+.user-message .prose h2,
+.user-message .prose h3,
+.user-message .prose h4 {
+  @apply text-white;
+}
+
+.user-message .prose ul,
+.user-message .prose ol {
+  @apply pl-4;
+}
+
+.user-message .prose ul li {
+  @apply marker:text-white;
+}
+
+.user-message .prose ol li {
+  @apply marker:text-white;
+}
+
+.user-message .prose strong {
+  @apply font-semibold text-white;
+}
+
+.user-message .prose code {
+  @apply bg-white bg-opacity-20 text-white;
+}
+
+.user-message .prose blockquote {
+  @apply border-l-white text-white;
+  border-left-color: rgba(255, 255, 255, 0.5);
+  opacity: 0.9;
+}
+
+.user-message .prose a {
+  @apply text-white underline;
+}
+
+/* Bot message typography - always white text */
+.bot-message .prose {
+  @apply text-white;
+}
+
+.bot-message .prose h1,
+.bot-message .prose h2,
+.bot-message .prose h3,
+.bot-message .prose h4 {
+  @apply text-white;
+}
+
+.bot-message .prose ul,
+.bot-message .prose ol {
+  @apply pl-4;
+}
+
+.bot-message .prose ul li {
+  @apply marker:text-white;
+}
+
+.bot-message .prose ol li {
+  @apply marker:text-white;
+}
+
+.bot-message .prose strong {
+  @apply font-semibold text-white;
+}
+
+.bot-message .prose code {
+  @apply bg-white bg-opacity-20 text-white;
+}
+
+.bot-message .prose blockquote {
+  @apply border-l-white text-white;
+  border-left-color: rgba(255, 255, 255, 0.5);
+  opacity: 0.9;
+}
+
+.bot-message .prose a {
+  @apply text-white underline;
+}
+
+/* Force white text for all bot elements in light mode */
+.bot-message,
+.bot-message *,
+.bot-message p,
+.bot-message span,
+.bot-message div,
+.bot-message h1,
+.bot-message h2,
+.bot-message h3,
+.bot-message h4,
+.bot-message h5,
+.bot-message h6,
+.bot-message li,
+.bot-message ul,
+.bot-message ol,
+.bot-message strong,
+.bot-message em,
+.bot-message b,
+.bot-message i,
+.bot-message code,
+.bot-message pre,
+.bot-message blockquote,
+.bot-message a {
+  color: white !important;
+}
+
+/* Override any prose styling that might set text color */
+.bot-message .prose,
+.bot-message .prose *,
+.bot-message .prose p,
+.bot-message .prose span,
+.bot-message .prose div,
+.bot-message .prose h1,
+.bot-message .prose h2,
+.bot-message .prose h3,
+.bot-message .prose h4,
+.bot-message .prose h5,
+.bot-message .prose h6,
+.bot-message .prose li,
+.bot-message .prose ul,
+.bot-message .prose ol,
+.bot-message .prose strong,
+.bot-message .prose em,
+.bot-message .prose b,
+.bot-message .prose i,
+.bot-message .prose code,
+.bot-message .prose pre,
+.bot-message .prose blockquote,
+.bot-message .prose a {
+  color: white !important;
+}
+
+/* Ensure list markers are white */
+.bot-message ul li::marker,
+.bot-message ol li::marker,
+.bot-message .prose ul li::marker,
+.bot-message .prose ol li::marker {
+  color: white !important;
+}
+
+/* Dark mode support is handled by the unified user-message styling */
+

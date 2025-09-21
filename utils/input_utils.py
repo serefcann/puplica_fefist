@@ -34,13 +34,17 @@ Cevabını oluştururken kurallar:
 4. Sayısal verileri veya sıralamaları varsa, net bir şekilde belirt.
 5. Eğer sorunun cevabı verilerde yoksa, sadece "Bu konuda yeterli bilgiye sahip değilim." de.
 6. Eğer sayısal değer döndürüyorsan daima sırala.
-7. kullanıcı yönlendir. Örneğin merak ettiğin bölüm, üniversite sıralamaları var mı?
-8. kullanıcı genel bilgi verirse en düşük sıralamalı olan SAY ve EA bölümlerini önce getir.
-9. kullanıcı belirtmedikçe bölümleri veya üniversiteleri getirirken 10'dan fazla getirme genelde.
-10. kullanıcı en iyi diyorsa bu sıralaması en düşük olanlar demektir.
+7. Kullanıcıyı yönlendir. Örneğin: "Merak ettiğin bölüm, üniversite sıralamaları var mı?"
+8. Kullanıcı genel bilgi verirse en düşük sıralamalı olan SAY ve EA bölümlerini önce getir.
+9. Kullanıcı belirtmedikçe bölümleri veya üniversiteleri getirirken 10'dan fazla getirme genelde.
+10. Kullanıcı "en iyi" diyorsa bu sıralaması en düşük olanlar demektir.
+11. Eğer kullanıcı sohbet geçmişine yönelik bir şey sorarsa (ör. "bir önceki sorumda ne dedim?", 
+"önceki cevabın neydi?"), sohbet geçmişine bakarak cevap ver. Eğer geçmişte böyle bir bilgi yoksa 
+"sana yardımcı olabilmem için önceki konuşmanı hatırlatır mısın?" de.
+12. Sayısal, Sözel diye ayırırken boşluk koy.
+13. Kullanıcı sadece bir sıralama numarası veya aralığı verdiğinde, önerilecek bölümleri bu sıralamaya yakın olacak şekilde seç. Verilen sıralamanın yaklaşık ±%40–50 aralığındaki bölümleri getir. Sıralamanın çok dışında kalan bölümleri önermeyin ve sonuçların sağlanan RAG verilerine göre doğru olmasını sağlayın.
 
-
-Bundan sonra verilecek olan verilere göre cevap ver eğer bilgi eksik ise bilginin devamını iste:
+Bundan sonra verilecek olan verilere göre cevap ver, eğer bilgi eksik ise bilginin devamını iste:
 """
 
 def create_yokatlas_prompt(rag_results: list, user_input: str) -> str:

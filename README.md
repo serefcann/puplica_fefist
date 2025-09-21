@@ -1,46 +1,120 @@
-# puplica_fefist
-# Gemini API Kullanımı İçin Adımlar
+# YÖK Atlas RAG Chatbot
 
-Bu bölüm, Gemini API’yi kullanmak için gereken adımları açıklamaktadır.
+A FastAPI backend with React frontend that provides information about Turkish universities and programs using RAG (Retrieval-Augmented Generation) technology.
 
----
+## Project Structure
 
-## 1. `.env` Dosyası Oluştur
-
-- Proje dizinine `.env` adında bir dosya ekleyin.  
-- Bu dosya, gizli API anahtarınızı saklamak için kullanılır.
-
----
-
-## 2. Google’dan API Key Al
-
-1. [Google Cloud Console](https://console.cloud.google.com/) üzerinden bir proje oluşturun.  
-2. Gemini API (GenAI) için API Key oluşturun.  
-3. Bu API Key’i `.env` dosyasına ekleyin:
-
-```env
-GOOGLE_API_KEY=your_api_key_here
 ```
-## 3. Gemini Client’ta API Key’i Kullan
-
-Python kodunda `dotenv` ile `.env` dosyasını yükleyin:
-
-```python
-from dotenv import load_dotenv
-import os
-from google import genai
-
-load_dotenv()  # .env yüklenir
-api_key = os.getenv("GOOGLE_API_KEY")
-
-client = genai.Client(api_key=api_key)
+puplica/
+├── frontend/              # React frontend application
+│   ├── src/              # Frontend source code
+│   │   ├── components/   # React components
+│   │   │   ├── ChatBox.jsx
+│   │   │   ├── InputBar.jsx
+│   │   │   ├── MessageBubble.jsx
+│   │   │   └── TypingIndicator.jsx
+│   │   ├── App.jsx       # Main application component
+│   │   ├── main.jsx      # Application entry point
+│   │   └── index.css     # Global styles
+│   ├── public/           # Static assets
+│   │   └── index.html    # HTML template
+│   ├── package.json      # Frontend dependencies
+│   ├── vite.config.js    # Vite configuration with API proxy
+│   ├── tailwind.config.js # Tailwind CSS configuration
+│   └── postcss.config.js # PostCSS configuration
+├── data/                  # Data files
+│   ├── program_ids.csv   # Program ID mappings
+│   ├── yokatlas_data.json # University data
+│   └── yokatlas_index.faiss # FAISS index
+├── utils/                 # Python utilities
+├── constants/             # Python constants
+├── app.py                 # FastAPI backend
+├── requirements.txt       # Python dependencies
+└── README.md              # This file
 ```
-## 4. Gemini API ile Sorgu Yap
 
-```python
-response = client.models.generate_content(
-    model="gemini-2.5-flash",
-    contents="Where is Marmara University?"
-)
-print(response.text)
+## Features
+
+- **Modern React Frontend**: Clean, responsive interface with Gemini-like design
+- **FastAPI Backend**: High-performance Python API with RAG technology
+- **Real-time Chat**: Interactive chat interface with typing indicators
+- **Turkish Language Support**: Optimized for Turkish university data
+- **API Proxy**: Seamless frontend-backend communication
+
+## Quick Start
+
+### Backend Setup
+```bash
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+# Windows:
+venv\Scripts\activate
+# macOS/Linux:
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run backend
+python app.py
 ```
+
+### Frontend Setup
+```bash
+# Navigate to frontend directory
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+```
+
+## Development
+
+The project is organized with clear separation of concerns:
+
+- **Frontend**: React with Vite, located in `frontend/` directory
+- **Backend**: FastAPI with Python utilities in root directory
+- **API Integration**: Vite proxy automatically forwards `/ask` requests to backend
+
+## API Endpoints
+
+- `POST /ask` - Send a question to the chatbot
+
+## Technologies Used
+
+### Frontend
+- React 18
+- Vite
+- Tailwind CSS
+- Custom Gemini-inspired styling
+
+### Backend
+- FastAPI
+- Python
+- FAISS (vector search)
+- Hugging Face Transformers
+
+## Running the Application
+
+1. **Start the backend** (from root directory):
+   ```bash
+   python app.py
+   ```
+
+2. **Start the frontend** (from frontend directory):
+   ```bash
+   cd frontend
+   npm run dev
+   ```
+
+3. **Access the application**: Open `http://localhost:3000` in your browser
+
+The frontend will automatically proxy API requests to the backend running on `http://127.0.0.1:8000`.
